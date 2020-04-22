@@ -139,7 +139,7 @@ export default {
                 //提示信息
                 alert("用户名已经存在")
                 //将输入框清空
-                
+
                 //提示信息
               } else {
                 //跳转到首页
@@ -205,7 +205,10 @@ export default {
             //刷新界面
             // window.reload();
             //跳转到首页
+            // this.$router.push("/home");
+            
             this.$router.push("/home");
+            this.$router.go(0)
           }
         })
         .catch(function(err) {

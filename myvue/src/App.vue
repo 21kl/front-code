@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
+    <!-- <router-view v-if="isRouterAlive"></router-view> -->
     <!--导航条-->
     <el-menu
       class="el-menu-demo"
@@ -20,7 +21,7 @@
         <router-link to="/addQuestion">我的工作台</router-link>
       </el-menu-item>
       <el-menu-item index="4">
-        <router-link to="/learn">学习</router-link>
+        <router-link to="/learn">刷题</router-link>
       </el-menu-item>
       <el-menu-item index="5">
         <router-link to="/discuss">讨论区</router-link>
@@ -36,19 +37,25 @@
       </el-menu-item>
     </el-menu>
     <br />
-    <router-view />
+    <router-view v-if="isRouterAlive"/>
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
+  provide (){
+     return {
+       reload:this.reload
+     }
+  },
   data(){
     return {
       showlogin:localStorage.getItem("username"),
       // showlogin: 'test',
       //有一个bug，如果刷新，不会跳转到首页但是显示却会到首页
-      activeIndex:'1'
+      // activeIndex:'1'
+      isRouterAlive:true
     }
   },
   methods:{
@@ -58,8 +65,16 @@ export default {
       localStorage.removeItem("token")
       localStorage.removeItem("uid")
       //重新刷新页面
-      window.reload();
+      //会直接出现空白的界面，体验不好
+      this.$router.go(0)
+      // this.reload()
       console.log("exit")
+    },
+    reload (){
+       this.isRouterAlive = false
+       this.$nextTick(function(){
+          this.isRouterAlive = true
+       })
     }
   }
 };
