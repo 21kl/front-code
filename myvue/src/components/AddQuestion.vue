@@ -66,23 +66,25 @@ export default {
   },
   methods: {
     addQuestion() {
-      this.$http
+      this.axios
         .post(
           "http://localhost:8003/question/addQuestion",
           {
-            title: this.title,
-            optionOne: this.optionOne,
-            optionTwo: this.optionTwo,
-            optionThree: this.optionThree,
-            optionFour: this.optionFour,
-            tag: this.tag,
-            score: this.score,
-            answer: this.answer,
-            deepth: this.deepth,
-            uid:localStorage.getItem("uid")
+            params: {
+              title: this.title,
+              optionOne: this.optionOne,
+              optionTwo: this.optionTwo,
+              optionThree: this.optionThree,
+              optionFour: this.optionFour,
+              tag: this.tag,
+              score: this.score,
+              answer: this.answer,
+              deepth: this.deepth,
+              uid: localStorage.getItem("uid")
+            }
           },
           {
-            emulateJSON: true
+            emulateJSON: false
           }
         )
         .then(result => {
