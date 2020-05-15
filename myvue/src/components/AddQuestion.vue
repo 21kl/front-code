@@ -68,23 +68,64 @@ export default {
     addQuestion() {
       this.axios
         .post(
+          // {
+          //   url: "http://localhost:8003/question/addQuestion",
+          //   method: "post",
+          //   data: {
+          //     title: this.title,
+          //     optionOne: this.optionOne,
+          //     optionTwo: this.optionTwo,
+          //     optionThree: this.optionThree,
+          //     optionFour: this.optionFour,
+          //     tag: this.tag,
+          //     score: this.score,
+          //     answer: this.answer,
+          //     deepth: this.deepth,
+          //     uid: localStorage.getItem("uid")
+          //   },
+          //   transformRequest: [
+          //     function(data) {
+          //       // Do whatever you want to transform the data
+          //       let ret = "";
+          //       for (let it in data) {
+          //         ret +=
+          //           encodeURIComponent(it) +
+          //           "=" +
+          //           encodeURIComponent(data[it]) +
+          //           "&";
+          //       }
+          //       return ret;
+          //     }
+          //   ],
+          //   headers: {
+          //     "Content-Type": "application/x-www-form-urlencoded"
+          //   }
+          // }
           "http://localhost:8003/question/addQuestion",
           {
-            params: {
-              title: this.title,
-              optionOne: this.optionOne,
-              optionTwo: this.optionTwo,
-              optionThree: this.optionThree,
-              optionFour: this.optionFour,
-              tag: this.tag,
-              score: this.score,
-              answer: this.answer,
-              deepth: this.deepth,
-              uid: localStorage.getItem("uid")
-            }
+          title: this.title,
+          optionOne: this.optionOne,
+          optionTwo: this.optionTwo,
+          optionThree: this.optionThree,
+          optionFour: this.optionFour,
+          tag: this.tag,
+          score: this.score,
+          answer: this.answer,
+          deepth: this.deepth,
+          uid:localStorage.getItem("uid")
+          //   "title": this.title,
+          //   "optionOne": this.optionOne,
+          //   "optionTwo": this.optionTwo,
+          //   "optionThree": this.optionThree,
+          //   "optionFour": this.optionFour,
+          //   "tag": this.tag,
+          //   "score": this.score,
+          //   "answer": this.answer,
+          //   "deepth": this.deepth,
+          //   "uid":localStorage.getItem("uid")
           },
           {
-            emulateJSON: false
+            emulateJSON: true
           }
         )
         .then(result => {

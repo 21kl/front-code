@@ -11,7 +11,7 @@ import Head from '@/components/Head'
 import Discuss from '@/components/Discuss'
 import Learn from '@/components/Learn'
 import FirstPage from '@/components/FirstPage'
-
+import Time from '@/components/Time'
 Vue.use(Router)
 
 export default new Router({
@@ -69,6 +69,11 @@ export default new Router({
       path: '/firstPage',
       name: 'FirstPage',
       component: FirstPage
+    },
+    {
+      path: '/time',
+      name: 'Time',
+      component: Time
     }
   ]
 })
