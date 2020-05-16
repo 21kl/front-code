@@ -12,6 +12,7 @@ import Discuss from '@/components/Discuss'
 import Learn from '@/components/Learn'
 import FirstPage from '@/components/FirstPage'
 import Time from '@/components/Time'
+import PaperIndex from '@/views/paper/index'
 Vue.use(Router)
 
 export default new Router({
@@ -74,6 +75,12 @@ export default new Router({
       path: '/time',
       name: 'Time',
       component: Time
+    },
+    // 导入试卷的模块
+    {
+      path: '/paper/index',
+      component: PaperIndex,
+      name: 'PaperIndex'
     }
   ]
 })
