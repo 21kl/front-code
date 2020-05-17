@@ -137,6 +137,7 @@
                         <button
                           class="btn btn-info"
                           id="nextQuestion"
+                          @click="xxx()"
                         >下一题</button>
                       </div>
                     </div>
@@ -191,6 +192,7 @@ export default {
       HH: 0,
       mm: 0,
       ss: 0,
+      ddd: false,
       timeState: true,
       QuestionJosn: [
         {
@@ -463,11 +465,19 @@ export default {
       Question: 0,
       questioned: 0,
       checkQues: [],
-      questionNumber:20
+      questionNumber: 20,
+      temp: 32
     };
   },
 
   methods: {
+    xxx() {
+      if (this.activeQuestion + 1 != this.questionNumber)
+        this.showQuestion(this.activeQuestion + 1);
+      this.showQuestion(this.activeQuestion);
+      // if(this.activeQuestion==20)this.ddd = true
+      // else this.ddd = false;
+    },
     showQuestion(id) {
       $(".questioned").text(id + 1);
       this.questioned = (id + 1) / this.questions.length;
@@ -476,18 +486,21 @@ export default {
           .removeClass("question_id")
           .addClass("active_question_id");
       }
-      let _this = this
+      let _this = this;
       this.activeQuestion = id;
       $(".question")
         .find(".question_info")
         .remove();
       var question = this.questions[id];
-      console.log("this.questions[id].questionTitle")
-      console.log(_this.questions[id])
-      console.log(this.activeQuestion)
+      console.log("this.questions[id].questionTitle");
+      console.log(_this.questions[1].questionTitle);
+      console.log(_this.activeQuestion);
       $(".question_title").html(
         // "<strong>第 " + (id + 1) + " 题 、</strong>" + question.questionTitle
-        "<strong>第 " + (id + 1) + " 题 、</strong>" + this.questions[id].questionTitle
+        "<strong>第 " +
+          (id + 1) +
+          " 题 、</strong>" +
+          this.questions[id].questionTitle
       );
       var items = question.questionItems.split(";");
       var item = "";
@@ -606,8 +619,8 @@ export default {
   },
   created: function() {
     let _this = this;
-    window.saveQuestionState = _this.saveQuestionState
-    window.showQuestion = _this.showQuestion
+    window.saveQuestionState = _this.saveQuestionState;
+    window.showQuestion = _this.showQuestion;
     var time = setInterval(function() {
       if (_this.timeState) {
         if (_this.HH == 24) _this.HH = 0;
@@ -629,6 +642,24 @@ export default {
         $(".time").text(str);
       }
     }, 1000);
+
+    const url = "http://localhost:8003/question/findQuestionListByTagId";
+    $.get(
+      url,
+      {
+        tagId: 1,
+        number: 2
+      },
+      function(result) {
+        console.log("进入到了ajax");
+        //   console.log(localStorage.get('uid'))
+        console.log("第一步");
+        _this.questionNumber = result.data.length;
+        _this.questions = result.data;
+        _this.QuestionJosn = result.data;
+        console.log(result.data);
+      }
+    );
     $(function() {
       $(".middle-top-left").width(
         $(".middle-top").width() - $(".middle-top-right").width()
@@ -636,22 +667,27 @@ export default {
       $(".progress-left").width($(".middle-top-left").width() - 200);
       //   在此处进行ajax请求
       // 通过ajax得到题目的信息
-      const url = "http://localhost:8003/question/findQuestionListByTagId";
-      $.get(
-        url,
-        {
-          tagId: 1,
-          number: 2
-        },
-        function(result) {
-          console.log("进入到了ajax");
-          //   console.log(localStorage.get('uid'))
-
-          console.log(result.data);
-        }
-      );
+      // const url = "http://localhost:8003/question/findQuestionListByTagId";
+      // $.get(
+      //   url,
+      //   {
+      //     tagId: 1,
+      //     number: 2
+      //   },
+      //   function(result) {
+      //     console.log("进入到了ajax");
+      //     //   console.log(localStorage.get('uid'))
+      //     console.log("第一步")
+      //     _this.questionNumber = result.data.length
+      //     _this.questions = result.data
+      //     _this.QuestionJosn = result.data
+      //     console.log(result.data);
+      //   }
+      // );
       _this.progress();
+      console.log("第二步");
       _this.answerCard();
+      console.log("第三步");
       _this.showQuestion(0);
       /*alert(QuestionJosn.length);*/
       /*实现进度条信息加载的动画*/
@@ -702,12 +738,16 @@ export default {
         );
       });
       //进入下一题
-      $("#nextQuestion").click(function() {
-        // if (this.activeQuestion + 1 != this.questions.length)
-        if (this.activeQuestion + 1 != this.questionNumber)
-          _this.showQuestion(this.activeQuestion + 1);
-        _this.showQuestion(this.activeQuestion);
-      });
+      // $("#nextQuestion").click(function() {
+      // if (this.activeQuestion + 1 != this.questions.length)
+      // console.log("下一题");
+      // console.log("temp");
+      // console.log(this.temp);
+      // console.log(_this.activeQuestion);
+      // if (_this.activeQuestion + 1 != _this.questionNumber)
+      //   _this.showQuestion(_this.activeQuestion + 1);
+      // _this.showQuestion(_this.activeQuestion);
+      // });
     });
   }
 };
