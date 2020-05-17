@@ -331,16 +331,23 @@ $(function() {
   );
   $(".progress-left").width($(".middle-top-left").width() - 200);
 //   在此处进行ajax请求
+  
   // 通过ajax得到题目的信息
   const url = 'http://localhost:8003/question/findQuestionListByTagId'
-  $.get(url,{
+  $.ajax({
+    url:url,
+    type:'GET',
+    async:false,
+    data:{
       "tagId":1,
       "number":2
-  },function(result){
-      console.log("进入到了ajax");
-    //   console.log(localStorage.get('uid'))
-    
-      console.log(result.data )
+    },
+    dataType:'json',
+    success:function(data){
+      // questions = Object.assign({}, data.date)
+      // QuestionJosn = Object.assign({}, data.date)
+      console.log(data)
+    }
   })
   progress();
   answerCard();
