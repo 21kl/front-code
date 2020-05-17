@@ -21,7 +21,7 @@
         <router-link to="/addQuestion">我的工作台</router-link>
       </el-menu-item>
       <el-menu-item index="4">
-        <router-link to="/paper/index">刷题</router-link>
+        <router-link to="/paper/list">刷题</router-link>
       </el-menu-item>
       <el-menu-item index="5">
         <router-link to="/discuss">讨论区</router-link>

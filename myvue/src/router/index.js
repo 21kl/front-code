@@ -13,6 +13,7 @@ import Learn from '@/components/Learn'
 import FirstPage from '@/components/FirstPage'
 import Time from '@/components/Time'
 import PaperIndex from '@/views/paper/index'
+import PaperList from '@/views/paper/list'
 Vue.use(Router)
 
 export default new Router({
@@ -81,6 +82,11 @@ export default new Router({
       path: '/paper/index',
       component: PaperIndex,
       name: 'PaperIndex'
+    },
+    {
+      path: '/paper/list',
+      component: PaperList,
+      name: 'PaperList'
     }
   ]
 })
