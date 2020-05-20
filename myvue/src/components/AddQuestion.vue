@@ -1,8 +1,17 @@
 <template>
   <div style="width:80%;text-align:center">
-    <el-form ref="form" label-width="80px">
-      <el-form-item label="标签" style="text-align: center;">
-        <el-select v-model="tag" placeholder="类型">
+    <el-form
+      ref="form"
+      label-width="80px"
+    >
+      <el-form-item
+        label="标签"
+        style="text-align: center;"
+      >
+        <el-select
+          v-model="tag"
+          placeholder="类型"
+        >
           <el-option
             v-for="item in tags"
             :key="item.tagContent"
@@ -11,16 +20,40 @@
           ></el-option>
         </el-select>
 
-        <el-select v-model="score" placeholder="分值">
-          <el-option v-for="item in scores" :key="item" :value="item" :label="item"></el-option>
+        <el-select
+          v-model="score"
+          placeholder="分值"
+        >
+          <el-option
+            v-for="item in scores"
+            :key="item"
+            :value="item"
+            :label="item"
+          ></el-option>
         </el-select>
 
-        <el-select v-model="deepth" placeholder="难度星级">
-          <el-option v-for="item in deepths" :key="item" :value="item" :label="item"></el-option>
+        <el-select
+          v-model="deepth"
+          placeholder="难度星级"
+        >
+          <el-option
+            v-for="item in deepths"
+            :key="item"
+            :value="item"
+            :label="item"
+          ></el-option>
         </el-select>
 
-        <el-select v-model="answer" placeholder="答案">
-          <el-option v-for="item in answers" :key="item" :value="item" :label="item"></el-option>
+        <el-select
+          v-model="answer"
+          placeholder="答案"
+        >
+          <el-option
+            v-for="item in answers"
+            :key="item"
+            :value="item"
+            :label="item"
+          ></el-option>
         </el-select>
       </el-form-item>
       <!-- <div>tag:{{tag}}</div> -->
@@ -40,7 +73,10 @@
         <el-input v-model="optionFour"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addQuestion">立即添加</el-button>
+        <el-button
+          type="primary"
+          @click="addQuestion"
+        >立即添加</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -68,61 +104,18 @@ export default {
     addQuestion() {
       this.axios
         .post(
-          // {
-          //   url: "http://localhost:8003/question/addQuestion",
-          //   method: "post",
-          //   data: {
-          //     title: this.title,
-          //     optionOne: this.optionOne,
-          //     optionTwo: this.optionTwo,
-          //     optionThree: this.optionThree,
-          //     optionFour: this.optionFour,
-          //     tag: this.tag,
-          //     score: this.score,
-          //     answer: this.answer,
-          //     deepth: this.deepth,
-          //     uid: localStorage.getItem("uid")
-          //   },
-          //   transformRequest: [
-          //     function(data) {
-          //       // Do whatever you want to transform the data
-          //       let ret = "";
-          //       for (let it in data) {
-          //         ret +=
-          //           encodeURIComponent(it) +
-          //           "=" +
-          //           encodeURIComponent(data[it]) +
-          //           "&";
-          //       }
-          //       return ret;
-          //     }
-          //   ],
-          //   headers: {
-          //     "Content-Type": "application/x-www-form-urlencoded"
-          //   }
-          // }
           "http://localhost:8003/question/addQuestion",
           {
-          title: this.title,
-          optionOne: this.optionOne,
-          optionTwo: this.optionTwo,
-          optionThree: this.optionThree,
-          optionFour: this.optionFour,
-          tag: this.tag,
-          score: this.score,
-          answer: this.answer,
-          deepth: this.deepth,
-          uid:localStorage.getItem("uid")
-          //   "title": this.title,
-          //   "optionOne": this.optionOne,
-          //   "optionTwo": this.optionTwo,
-          //   "optionThree": this.optionThree,
-          //   "optionFour": this.optionFour,
-          //   "tag": this.tag,
-          //   "score": this.score,
-          //   "answer": this.answer,
-          //   "deepth": this.deepth,
-          //   "uid":localStorage.getItem("uid")
+            title: this.title,
+            optionOne: this.optionOne,
+            optionTwo: this.optionTwo,
+            optionThree: this.optionThree,
+            optionFour: this.optionFour,
+            tag: this.tag,
+            score: this.score,
+            answer: this.answer,
+            deepth: this.deepth,
+            uid: localStorage.getItem("uid")
           },
           {
             emulateJSON: true
