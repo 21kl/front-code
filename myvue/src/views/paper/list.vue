@@ -36,7 +36,7 @@
             <template slot-scope="{row}">
               <router-link
                 target="_blank"
-                :to="{path:'/paper/index',query:{id:row.id}}"
+                :to="{path:'/paper/index',query:{id:row.id,tagId:tabId}}"
               >
                 <el-button
                   type="text"

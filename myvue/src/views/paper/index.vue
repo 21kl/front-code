@@ -442,6 +442,12 @@ export default {
     }
   },
   created: function() {
+    var tagIdQuery = Number(this.$route.query.tagId);
+    console.log("tagIdQuery")
+    console.log(tagIdQuery)
+    var number = (this.$route.query.id)*10
+    console.log("number")
+    console.log(number)
     let _this = this;
     window.saveQuestionState = _this.saveQuestionState;
     window.showQuestion = _this.showQuestion;
@@ -475,8 +481,8 @@ export default {
       // 这里必须使用同步，否则数据没有加载的情况下其他都会报错
       async: false,
       data: {
-        tagId: 1,
-        number: 5
+        tagId: tagIdQuery,
+        number: number
       },
       dataType: "json",
       success: function(data) {
