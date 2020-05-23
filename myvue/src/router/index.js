@@ -14,13 +14,14 @@ import FirstPage from '@/components/FirstPage'
 import Time from '@/components/Time'
 import PaperIndex from '@/views/paper/index'
 import PaperList from '@/views/paper/list'
+import UserIndex from '@/views/user/index'
 Vue.use(Router)
 
 export default new Router({
   routes: [{
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'home',
+      component: Home
     },
     {
       path: '/myselect',
@@ -87,6 +88,11 @@ export default new Router({
       path: '/paper/list',
       component: PaperList,
       name: 'PaperList'
+    },
+    {
+      path: '/user/index',
+      component: UserIndex,
+      name: 'UserIndex'
     }
   ]
 })

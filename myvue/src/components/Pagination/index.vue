@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { scrollTo } from '@/utils/scroll-to'
 
 export default {
   name: 'Pagination',
@@ -46,10 +45,7 @@ export default {
       type: Boolean,
       default: true
     },
-    autoScroll: {
-      type: Boolean,
-      default: true
-    },
+    
     hidden: {
       type: Boolean,
       default: false
@@ -58,17 +54,25 @@ export default {
   computed: {
     currentPage: {
       get () {
+        console.log("curentPage get")
+        console.log(this.page)
         return this.page
       },
       set (val) {
+        console.log("currentPage set")
+        console.log(val)
         this.$emit('update:page', val)
       }
     },
     pageSize: {
       get () {
+        console.log("pageSize get limit")
+        console.log(this.limit)
         return this.limit
       },
       set (val) {
+        console.log("pageSize set limit")
+        console.log(val)
         this.$emit('update:limit', val)
       }
     }
@@ -76,15 +80,19 @@ export default {
   methods: {
     handleSizeChange (val) {
       this.$emit('pagination', { page: this.currentPage, limit: val })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
+      // if (this.autoScroll) {
+      //   scrollTo(0, 800)
+      // }
     },
     handleCurrentChange (val) {
+      console.log("page")
+      console.log(val)
+      console.log("limit")
+      console.log(this.pageSize)
       this.$emit('pagination', { page: val, limit: this.pageSize })
-      if (this.autoScroll) {
-        scrollTo(0, 800)
-      }
+      // if (this.autoScroll) {
+      //   scrollTo(0, 800)
+      // }
     }
   }
 }

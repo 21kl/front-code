@@ -213,28 +213,85 @@ export default {
       if (this.activeQuestion + 1 != this.questions.length)
         this.showQuestion(this.activeQuestion + 1);
       this.showQuestion(this.activeQuestion);
-      if(this.activeQuestion==this.questions.length)this.ddd = true
+      if (this.activeQuestion == this.questions.length) this.ddd = true;
       else this.ddd = false;
     },
-    submitQuestions(){
-      console.log(this.checkQues)
-      for(var i=0;i<this.checkQues.length;i++)console.log(this.checkQues[i])
-      for(var i=0;i<this.checkQues.length;i++){
-        console.log("this.questions[this.checkQues[i].id]")
-        console.log(this.questions[this.checkQues[i].id])
-        if(this.questions[this.checkQues[i].id].questionAnswer == this.checkQues[i].answer){
-          console.log("答案正确")
-        }else{
-          console.log("答案错误")
+    submitQuestions() {
+      const url = "http://localhost:8003/complete/addCompleteQuestion";
+      //这是一个很蠢的方法，通过循环将数据全部提交到后台
+      for (var i = 0; i < this.checkQues.length; i++) {
+        //题目
+        var title = this.questions[this.checkQues[i].id].questionTitle;
+        //题目的uid
+        var questionUid = this.questions[this.checkQues[i].id].questionUid;
+        //题目的分数
+        var questionScore = this.questions[this.checkQues[i].id].questionScore;
+        //用户选项内容
+        var selfSelect = this.checkQues[i].answer;
+        //答案选项的内容
+        var answerSelect = this.questions[this.checkQues[i].id].questionAnswer;
+        var array = ["A", "B", "C", "D"];
+        var selfSelectIndex = 0;
+        var answerSelectIndex = 0;
+        for (var j = 0; j < array.length; j++) {
+          if (array[j] == selfSelect) selfSelectIndex = j;
+          if (array[j] == answerSelect) answerSelectIndex = j;
+        }
+
+        console.log("self：" + selfSelect + "  answerSelect:" + answerSelect);
+        var selfOption = this.questions[this.checkQues[i].id].listOption[
+          selfSelectIndex
+        ].optionContent;
+        var correctOption = this.questions[this.checkQues[i].id].listOption[
+          answerSelectIndex
+        ].optionContent;
+
+        //在这里提交请求
+        this.axios
+          .post(
+            url,
+            {
+              questionTitle: title,
+              selfOption: selfOption,
+              correctOption: correctOption,
+              uid: localStorage.getItem("uid"),
+              questionUid:questionUid,
+              questionScore:questionScore
+            },
+            {
+              emulateJSON: true
+            }
+          )
+          .then(result => {
+            console.log("result")
+            console.log(result)
+          });
+
+        console.log("question");
+        console.log(this.questions[this.checkQues[i].id].questionTitle);
+        if (
+          this.questions[this.checkQues[i].id].questionAnswer ==
+          this.checkQues[i].answer
+        ) {
+          console.log("答案正确");
+        } else {
+          console.log("答案错误");
         }
       }
+
+      //打印看是否我们需要的属性都添加进去了
+      console.log("checkQues");
+      console.log(this.checkQues);
+      //在这里我们将用户的所有选项都提交上去
+      // const url = "http://localhost:8003/complete/addCompleteQuestion";
+
       alert(
-          "已做答:" +
-            $(".clickQue").length +
-            "道题,还有" +
-            (this.questions.length - $(".clickQue").length) +
-            "道题未完成"
-        );
+        "已做答:" +
+          $(".clickQue").length +
+          "道题,还有" +
+          (this.questions.length - $(".clickQue").length) +
+          "道题未完成"
+      );
     },
     showQuestion(id) {
       $(".questioned").text(id + 1);
@@ -254,7 +311,7 @@ export default {
       console.log(_this.questions[1].questionTitle);
       console.log(_this.activeQuestion);
       //改变按钮的状态
-      if(_this.activeQuestion!=_this.questions.length)_this.ddd = false;
+      if (_this.activeQuestion != _this.questions.length) _this.ddd = false;
       else _this.ddd = true;
       $(".question_title").html(
         // "<strong>第 " + (id + 1) + " 题 、</strong>" + question.questionTitle
@@ -313,8 +370,8 @@ export default {
 
     clickTrim(source) {
       var id = source.id;
-      console.log("clickTrim")
-      console.log(source.id)
+      console.log("clickTrim");
+      console.log(source.id);
       $("#" + id)
         .find("input")
         .prop("checked", "checked");
@@ -333,10 +390,10 @@ export default {
           this.checkQues[i].answer = $("#" + id)
             .find("input[name=item]:checked")
             .val(); //获取当前考题的选项值
-            console.log("checkQes.id")
-            console.log(this.checkQues[i].id)
-            console.log("checkQue.answer")
-            console.log(this.checkQues[i].answer)
+          console.log("checkQes.id");
+          console.log(this.checkQues[i].id);
+          console.log("checkQue.answer");
+          console.log(this.checkQues[i].answer);
         }
       }
       if (
@@ -423,10 +480,10 @@ export default {
       },
       dataType: "json",
       success: function(data) {
-        _this.questions = data.data
-        _this.QuestionJosn = data.date
-        console.log("第一步")
-        console.log("ajax")
+        _this.questions = data.data;
+        _this.QuestionJosn = data.date;
+        console.log("第一步");
+        console.log("ajax");
         console.log(data);
       }
     });
