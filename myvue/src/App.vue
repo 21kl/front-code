@@ -23,7 +23,7 @@
         <router-link to="/paper/list">刷题</router-link>
       </el-menu-item>
       <el-menu-item index="5">
-        <router-link to="/discuss">讨论区</router-link>
+        <router-link to="/discuss/index">讨论区</router-link>
       </el-menu-item>
 
       <el-submenu

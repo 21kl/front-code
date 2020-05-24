@@ -115,10 +115,24 @@ export default {
 
   methods: {
       submitDiscuss(){
-          console.log("标题");
-          console.log(this.title)
-          console.log("content")
-          console.log(this.content)
+        const url = "http://localhost:8003/discuss/add"
+          this.axios
+        .post(url,{
+            userUid:localStorage.getItem('uid'),
+            discussContent:this.content,
+            discussTitle:this.title
+          },
+          {
+            emulateJSON: true
+          }
+          ).then(res=>{
+            console.log("discuss post")
+            console.log(res.data)
+            if(res.data.code == 200){
+              this.title = "";
+              this.content = "";
+            }
+          })
       },
     onEditorBlur() {
       //失去焦点事件
