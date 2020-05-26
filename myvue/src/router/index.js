@@ -17,6 +17,7 @@ import PaperList from '@/views/paper/list'
 import UserIndex from '@/views/user/index'
 import DiscussRender from '@/components/DiscussRender'
 import DiscussIndex from '@/views/discuss/index'
+import TestBank from '@/views/testbank/index'
 Vue.use(Router)
 
 export default new Router({
@@ -106,6 +107,12 @@ export default new Router({
       path: '/discuss/index',
       component: DiscussIndex,
       name: 'DiscussIndex'
+    },
+    //点击题目贡献进行跳转
+    {
+      path: '/testbank/index',
+      component: TestBank,
+      name: 'TestBank'
     }
   ]
 })

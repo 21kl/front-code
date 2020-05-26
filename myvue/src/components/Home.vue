@@ -8,7 +8,14 @@
       <h3 style="height:50px">{{ item.tagContent }}</h3>
       <h3 style="height:120px">我的贡献：{{item.number}}道</h3>
       <div style="margin-bottom:10px">
-        <el-avatar :size="120" :src="imgUrl" style="vertical-align:middle;"></el-avatar>
+        
+        <!-- 点击头像进行跳转 -->
+        <router-link
+                target="_blank"
+                :to="{path:'/testbank/index',query:{tagId:item.tagId}}"
+              >
+               <el-avatar :size="120" :src="imgUrl" style="vertical-align:middle;"></el-avatar>
+              </router-link>
       </div>
     </el-carousel-item>
   </el-carousel>

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div id="container">
-ss
-    </div>
+   
   </div>
 </template>
 
@@ -19,6 +17,8 @@ export default {
     console.log(ss);
     const div = document.createElement("div");
     div.innerHTML = ss;
+    div.style.width = "80%"
+    div.style.margin = "auto"
     document.body.appendChild(div);
     
   }

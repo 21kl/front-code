@@ -1,9 +1,30 @@
 <template>
   <div>
     <div>
+
+      <!-- 发帖子的按钮 -->
+      <div id="postDis" style="width:80%;display:inline;">
+        <el-input
+          placeholder="请输入内容"
+          prefix-icon="el-icon-search"
+          v-model="searchItem"
+          style="width:500px;float:left;margin-left:130px"
+          @keyup.enter.native="fuzzyQuery()"
+        >
+        
+        </el-input>
+        <!-- 在这里跳转到写讨论贴的界面 -->
+        <router-link
+                target="_blank"
+                :to="{path:'/discuss',query:{id:1}}"
+              >
+              <el-button type="primary" plain icon="el-icon-edit" style="margin-right:0px">我要发布</el-button>
+        </router-link>
+        
+      </div>
       <div
         id="disOne"
-        style="width:80%;height:60px;margin:auto;background: #e5e9f2"
+        style="width:80%;height:60px;margin:auto;background: #e5e9f2;margin-top:20px"
       >
         <div style="float:left;margin-top:10px">
           <el-avatar style="vertical-align:middle;"> user </el-avatar>
@@ -11,6 +32,7 @@
           <span style="vertical-align:middle;margin-left:10px;">{{username}}</span>
           <!-- 标题 -->
           <el-link type="info">
+            <!-- 跳转到显示帖子的界面 -->
             <router-link
               target="_blank"
               :to="{path:'/discussRender',query:{str:content}}"
@@ -37,7 +59,8 @@ export default {
       title: "",
       username: "",
       createTime: "",
-      content:""
+      content: "",
+      searchItem:""
     };
   },
   methods: {
@@ -51,7 +74,22 @@ export default {
         this.title = discuss.discussTitle;
         this.username = discuss.userUsername;
         this.createTime = discuss.stringDate;
-        this.content = discuss.discussContent
+        this.content = discuss.discussContent;
+      });
+    },
+    fuzzyQuery(){
+      const url = "http://localhost:8003/discuss/findDiscussFuzzy"
+      this.axios.get(url,{params:{
+        content:this.searchItem
+      }}).then(res => {
+        console.log("list");
+        console.log(res);
+        console.log(res.data.data);
+        var discuss = res.data.data[0];
+        this.title = discuss.discussTitle;
+        this.username = discuss.userUsername;
+        this.createTime = discuss.stringDate;
+        this.content = discuss.discussContent;
       });
     }
   },

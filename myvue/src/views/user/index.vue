@@ -7,7 +7,7 @@
           <!-- 头像和昵称需要偏左来显示 -->
           <div style="float:left;margin-top:10px">
             <el-avatar style="vertical-align:middle;"> user </el-avatar>
-            <span style="vertical-align:middle;margin-left:20px;">chenbo</span>
+            <span style="vertical-align:middle;margin-left:20px;">{{username}}</span>
           </div>
           <!-- 签到和排名需要靠右显示 -->
           <div style="float:right;margin-top:10px">
@@ -35,7 +35,7 @@
               name="first"
             >
 
-              讨论贴
+              你还没有发布帖子，快去发布帖子吧~~~
 
             </el-tab-pane>
             <el-tab-pane
@@ -52,16 +52,25 @@
               >
                 <el-table-column
                   prop="id"
-                  label="题目序号"
+                  label="序号"
                   width="90px"
                 />
                 <el-table-column
                   prop="questionTitle"
                   label="题目标题"
                 />
-                <el-table-column label="我的选择" prop="selfOption"></el-table-column>
-                <el-table-column label="正确选项" prop="correctOption"></el-table-column>
-                <el-table-column label="提交时间" prop="createTime"></el-table-column>
+                <el-table-column
+                  label="我的选择"
+                  prop="selfOption"
+                ></el-table-column>
+                <el-table-column
+                  label="正确选项"
+                  prop="correctOption"
+                ></el-table-column>
+                <el-table-column
+                  label="提交时间"
+                  prop="createTime"
+                ></el-table-column>
               </el-table>
               <pagination
                 v-show="total>0"
@@ -79,7 +88,50 @@
               name="third"
             >
 
-              收藏
+              <!-- 收藏的展示跟已刷题目是一样的 -->
+              <div v-if="total>0">
+                <el-table
+                  v-loading="listLoading"
+                  :data="tableData"
+                  fit
+                  highlight-current-row
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop="id"
+                    label="序号"
+                    width="90px"
+                  />
+                  <el-table-column
+                    prop="questionTitle"
+                    label="题目标题"
+                  />
+                  <el-table-column
+                    label="我的选择"
+                    prop="selfOption"
+                  ></el-table-column>
+                  <el-table-column
+                    label="正确选项"
+                    prop="correctOption"
+                  ></el-table-column>
+                  <el-table-column
+                    label="提交时间"
+                    prop="createTime"
+                  ></el-table-column>
+                </el-table>
+                <pagination
+                  v-show="total>0"
+                  :total="total"
+                  :background="false"
+                  :page.sync="queryParam.pageIndex"
+                  :limit.sync="queryParam.pageSize"
+                  @pagination="search"
+                  style="margin-top: 20px"
+                />
+              </div>
+              <div v-else>
+                {{notifyStr}}
+              </div>
 
             </el-tab-pane>
             <el-tab-pane
@@ -87,8 +139,27 @@
               name="fourth"
             >
 
-              个人信息
+              <!-- 个人信息的表单界面 -->
+              <div>
+                <el-form label-width="80px">
+                  <el-form-item label="用户名">
+                    <el-input v-model="username" :disabled="true"></el-input>
+                  </el-form-item>
+                  <el-form-item label="已完成">
+                    <el-input v-model="totalCompleted" :disabled="true"></el-input>
+                  </el-form-item>
+                  <el-form-item label="旧密码">
+                    <el-input v-model="oldPass" show-password></el-input>
+                  </el-form-item>
+                  <el-form-item label="新密码">
+                    <el-input v-model="newPass" show-password></el-input>
+                  </el-form-item>
 
+                  <el-form-item>
+                    <el-button type="primary" @click="onSubmit">提交修改</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </el-main>
@@ -99,7 +170,7 @@
 </template>
 
 <script>
-import Pagination from "@/components/Pagination";
+import Pagination from "@/components/Pagination/index";
 export default {
   components: { Pagination },
   data() {
@@ -111,45 +182,102 @@ export default {
       },
       listLoading: true,
       tableData: [],
-      total: 0
+      total: 0,
+      username: "",
+      notifyStr: "空空如也",
+      totalCompleted: 0,
+      oldPass: "",
+      newPass: ""
     };
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
-      console.log(tab.index);
-      console.log(tab.label);
-      console.log(tab.name);
-      this.search()
+      if (tab.index == 0) {
+        console.log("讨论贴");
+      } else if (tab.index == 1) {
+        //已经刷完的题目
+        this.search(0);
+      } else if (tab.index == 2) {
+        //收藏的题目
+        this.search(1);
+      } else {
+        this.getUsername()
+        this.getCompletedTotal();
+      }
     },
-    search() {
-
-        console.log("search")
-        console.log("index")
-        console.log(this.queryParam.pageIndex)
-        const url = "http://localhost:8003/complete/findAllCompleteByUid";
-
-        this.axios
-        .get(url, {
-          params:{
+    onSubmit(){
+      this.listLoading = true;
+      const url = "http://localhost:8004/auth/updatePass"
+      this.axios
+        .post(url, {
             uid: localStorage.getItem("uid"),
-            indexPage:this.queryParam.pageIndex,
-            limitSize:this.queryParam.pageSize
+            oldPass: this.oldPass,
+            newPass: this.newPass
+        },
+        {
+          emulateJSON: true
+        })
+        .then(res => {
+          if(res.data.code == 200)
+            console.log("修改密码成功");
+          console.log(res)
+        });
+    },
+    getCompletedTotal() {
+      const url = "http://localhost:8003/complete/getCompletedTotal";
+      this.axios
+        .get(url, {
+          params: {
+            uid: localStorage.getItem("uid"),
+            voteStatus: 0
           }
         })
         .then(res => {
-            this.listLoading = false;
-          console.log("uid:" + localStorage.getItem("uid"));
-          console.log("res.data.data");
-          console.log(res);
-          this.tableData = res.data.data
-          this.total = res.data.total
+          console.log("tatalCompleted");
+          console.log(res.data);
+          this.totalCompleted = res.data;
         });
-        
     },
-    created:function(){
-        console.log("created")
-        this.search()
+    getUsername() {
+      const url = "http://localhost:8004/user/findUsernameByUid";
+      this.axios
+        .get(url, {
+          params: {
+            uid: localStorage.getItem("uid")
+          }
+        })
+        .then(res => {
+          this.username = res.data;
+        });
+    },
+    search(status) {
+      this.listLoading = true;
+      this.getUsername();
+      const url = "http://localhost:8003/complete/findAllCompleteByUid";
+      this.axios
+        .get(url, {
+          params: {
+            uid: localStorage.getItem("uid"),
+            indexPage: this.queryParam.pageIndex,
+            limitSize: this.queryParam.pageSize,
+            //是否收藏的标志
+            voteStatus: status
+          }
+        })
+        .then(res => {
+          this.listLoading = false;
+          this.tableData = res.data.data;
+          this.total = res.data.total;
+        });
+    },
+    created: function() {
+      this.username = this.$route.query.username;
+      console.log("created");
+      this.getUsername();
+      this.search(1);
+    },
+    mounted: function() {
+      console.log("mouted");
     }
   }
 };
