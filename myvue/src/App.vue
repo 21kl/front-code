@@ -82,7 +82,9 @@ export default {
       localStorage.removeItem("uid");
       //重新刷新页面
       //会直接出现空白的界面，体验不好
-      this.$router.go(0);
+      // this.$router.go(0);
+      this.showlogin = null
+      this.$router.push("firstPage")
       // this.reload()
       console.log("exit");
     },

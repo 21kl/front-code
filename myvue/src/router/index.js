@@ -18,6 +18,11 @@ import UserIndex from '@/views/user/index'
 import DiscussRender from '@/components/DiscussRender'
 import DiscussIndex from '@/views/discuss/index'
 import TestBank from '@/views/testbank/index'
+import AdminIndex from '@/views/admin/index'
+import Console from '@/views/admin/console'
+import NotFound from '@/views/admin/notFound'
+import User from '@/views/admin/user'
+import Question from '@/views/admin/question'
 Vue.use(Router)
 
 export default new Router({
@@ -113,6 +118,32 @@ export default new Router({
       path: '/testbank/index',
       component: TestBank,
       name: 'TestBank'
+    },
+    //管理员的界面路由
+    {
+      path: '/admin/index',
+      component: AdminIndex,
+      children: [
+        {
+          path: '/console',
+          name: 'console',
+          component: Console
+        },
+        {
+          path: '/user',
+          name: 'user',
+          component: User
+        },
+        {
+          path: '/question',
+          name: 'articles',
+          component: Question
+        },
+        {
+          path: '/404',
+          component: NotFound
+        }
+      ]
     }
   ]
 })

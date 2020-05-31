@@ -4,7 +4,10 @@
       <!-- 选项卡 -->
       <el-tabs type="border-card">
         <el-tab-pane>
-          <span slot="label" class="titlte">注册</span>
+          <span
+            slot="label"
+            class="titlte"
+          >注册</span>
           <!-- 注册 -->
           <!-- 选项卡 -->
           <el-form
@@ -15,17 +18,37 @@
             label-width="100px"
             class="demo-ruleForm"
           >
-            <el-form-item label="用户名" prop="username">
+            <el-form-item
+              label="用户名"
+              prop="username"
+            >
               <el-input v-model.number="ruleForm.username"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+            <el-form-item
+              label="密码"
+              prop="password"
+            >
+              <el-input
+                type="password"
+                v-model="ruleForm.password"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="checkPass">
-              <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            <el-form-item
+              label="确认密码"
+              prop="checkPass"
+            >
+              <el-input
+                type="password"
+                v-model="ruleForm.checkPass"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click.native="submitForm('ruleForm')">注册</el-button>
+              <el-button
+                type="primary"
+                @click.native="submitForm('ruleForm')"
+              >注册</el-button>
               <el-button @click.native="resetForm('ruleForm')">重置</el-button>
               <!-- <el-button plain @click.native="open1" id="rerror"></el-button> -->
             </el-form-item>
@@ -33,17 +56,36 @@
           <!-- 注册 -->
         </el-tab-pane>
         <el-tab-pane>
-          <span slot="label" class="titlte">登录</span>
+          <span
+            slot="label"
+            class="titlte"
+          >登录</span>
           <!-- 登录 -->
-          <el-form status-icon :rules="rls" label-width="100px" class="demo-ruleForm">
+          <el-form
+            status-icon
+            :rules="rls"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
             <el-form-item label="用户名">
-              <el-input type="text" v-model.number="ruleForm.username" id="uname"></el-input>
+              <el-input
+                type="text"
+                v-model.number="ruleForm.username"
+                id="uname"
+              ></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input type="password" v-model.number="ruleForm.password" id="pass"></el-input>
+              <el-input
+                type="password"
+                v-model.number="ruleForm.password"
+                id="pass"
+              ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click.native="login">登录</el-button>
+              <el-button
+                type="primary"
+                @click.native="login"
+              >登录</el-button>
               <el-button @click.native="resetForm">重置</el-button>
               <!-- <el-button plain @click.native="open1" id="lerror"></el-button> -->
             </el-form-item>
@@ -120,6 +162,7 @@ export default {
   methods: {
     //注册
     submitForm(formName) {
+      const _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
           /*在这里进行跨域请求*/
@@ -133,17 +176,19 @@ export default {
             }
           })
             .then(function(res) {
-              console.log("登录返回")
-              console.log(res.data)
+              console.log("登录返回");
+              console.log(res.data);
               if (res.data.code == 250) {
                 //提示信息
-                alert("用户名已经存在")
+                alert("用户名已经存在");
                 //将输入框清空
 
                 //提示信息
               } else {
                 //跳转到首页
-                this.$router.push("/home");
+                _this.login()
+                _this.$router.push("/home");
+                _this.$router.go(0)
               }
             })
             .catch(function(err) {
@@ -196,19 +241,14 @@ export default {
             //把用户名、登录身份、头像存储起来
             localStorage.setItem("uid", res.data.uid);
             localStorage.setItem("token", res.data.token);
-            localStorage.setItem("username",res.data.username)
-            // if (res.data == "" || res.data == null) {
-            //   localStorage.setItem("logo", "../../img/my.png");
-            // } else {
-            //   localStorage.setItem("logo", res.data);
-            // }
-            //刷新界面
-            // window.reload();
-            //跳转到首页
-            // this.$router.push("/home");
-            
-            this.$router.push("/home");
-            this.$router.go(0)
+            localStorage.setItem("username", res.data.username);
+            if (res.data.role == "0") {
+              this.$router.push("/home");
+              this.$router.go(0);
+            } else {
+              this.$router.push("/admin/index");
+              this.$router.go(0);
+            }
           }
         })
         .catch(function(err) {
