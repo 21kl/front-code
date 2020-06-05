@@ -1,5 +1,23 @@
 <template>
   <div>
+
+    <el-dialog
+  title="详情"
+  :visible.sync="dialogVisible"
+  width="30%"
+  :before-close="handleClose">
+  <span>本次练习情况</span><br/>
+  <span>已答题：{{answered}}道</span><br/>
+  <span>未答题：{{notanswered}}道</span><br/>
+  <span>答对题：{{correctanswered}}道</span><br/>
+  <span>答错题：{{notcorrectanswered}}道</span><br/>
+  <span>点击跳转回首页</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="gobackhome">确 定</el-button>
+  </span>
+</el-dialog>
+
     <div class="col-md-1"></div>
     <div class="col-md-10">
       <div class="content">
@@ -204,11 +222,27 @@ export default {
       questioned: 0,
       checkQues: [],
       questionNumber: 0,
-      temp: 32
+      temp: 32,
+      dialogVisible:false,
+      answered:0,
+      notanswered:0,
+      correctanswered:0,
+      notcorrectanswered:0
     };
   },
 
   methods: {
+    gobackhome(){
+      this.dialogVisible = false
+      this.$router.push("/firstPage")
+    },
+    handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
     xxx() {
       if (this.activeQuestion + 1 != this.questions.length)
         this.showQuestion(this.activeQuestion + 1);
@@ -217,6 +251,7 @@ export default {
       else this.ddd = false;
     },
     submitQuestions() {
+      var correctNumber = 0;
       const url = "http://localhost:8003/complete/addCompleteQuestion";
       //这是一个很蠢的方法，通过循环将数据全部提交到后台
       for (var i = 0; i < this.checkQues.length; i++) {
@@ -274,6 +309,7 @@ export default {
           this.checkQues[i].answer
         ) {
           console.log("答案正确");
+          correctNumber++;
         } else {
           console.log("答案错误");
         }
@@ -285,13 +321,18 @@ export default {
       //在这里我们将用户的所有选项都提交上去
       // const url = "http://localhost:8003/complete/addCompleteQuestion";
 
-      alert(
-        "已做答:" +
-          $(".clickQue").length +
-          "道题,还有" +
-          (this.questions.length - $(".clickQue").length) +
-          "道题未完成"
-      );
+      // alert(
+      //   "已做答:" +
+      //     $(".clickQue").length +
+      //     "道题\n未作答:" +
+      //     (this.questions.length - $(".clickQue").length) +
+      //     "道题未完成"+"\n答对:"+correctNumber+"道题目\n"+"答错:"+(this.questions.length-correctNumber)+"道题目"
+      // );
+      this.answered = $(".clickQue").length
+      this.notanswered = (this.questions.length - $(".clickQue").length)
+      this.correctanswered = correctNumber
+      this.notcorrectanswered = this.questions.length-correctNumber
+      this.dialogVisible = true
     },
     showQuestion(id) {
       $(".questioned").text(id + 1);

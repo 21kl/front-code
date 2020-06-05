@@ -1,10 +1,26 @@
 <template>
+
+  
   <div class="user-box">
+    <div
+      id="postDis"
+      style="float:left;"
+    >
+      <el-input
+        placeholder="请输入用户昵称"
+        prefix-icon="el-icon-search"
+        v-model="searchItem"
+        style="width:500px;float:left;"
+        @keyup.enter.native="fuzzyQuery()"
+      >
+
+      </el-input>
+    </div>
     <el-row>
       <el-col :span="24">
         <div class="tool-box">
-          <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" @click="handleAdd">新增</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button>
+          <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" @click="handleAdd">新增</el-button> -->
+          <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
         </div>
       </el-col>
     </el-row>
@@ -18,12 +34,12 @@
       </el-table-column>
       <el-table-column
         sortable
-        prop="date"
+        prop="createTime"
         label="日期"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="username"
         label="用户名"
         width="180">
       </el-table-column>
@@ -31,7 +47,7 @@
       <el-table-column
         label="状态">
         <template slot-scope="scope">
-          {{ scope.row.status ? '启用' : '禁用' }}
+          {{ scope.row.status ? '不正常' : '正常' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="150">
@@ -56,15 +72,9 @@
       :total="400">
     </el-pagination>
     <el-dialog :title="dialogTitle" width="600px" :visible.sync="userFormVisible" @close="resetForm('userForm')">
-      <el-form :model="user" :rules="rules" ref="userForm">
-        <el-form-item label="姓名" prop="name" label-width="50px">
+      <el-form :model="user" ref="userForm">
+        <el-form-item label="排名" prop="username" label-width="50px">
           <el-input v-model="user.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" label-width="50px">
-          <el-input v-model="user.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" label-width="50px">
-          <el-input v-model="user.address" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="日期" label-width="50px">
           <el-date-picker
@@ -94,12 +104,11 @@ export default {
   data () {
     return {
       users: [],
+      searchItem: "",
       user: {
         id: '',
-        date: '',
-        name: '',
-        phone: '',
-        address: '',
+        createTime: '',
+        username: '',
         status: 0
       },
       userBackup: Object.assign({}, this.user),
@@ -119,10 +128,12 @@ export default {
     this.getUsers()
   },
   methods: {
+    fuzzyQuery(){},
     getUsers () {
       this.loading = true
-      this.$http('/api/users').then((res) => {
-        this.users = res.data
+      const url = "http://localhost:8004/user/findAllUser"
+      this.$http(url).then((res) => {
+        this.users = res.data.data
       }).catch((err) => {
         console.error(err)
       })
@@ -155,7 +166,7 @@ export default {
       })
     },
     handleDelete (index, row) {
-      this.$confirm(`确定删除用户 【${row.name}】 吗?`, '提示', {
+      this.$confirm(`确定删除用户 【${row.username}】 吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
