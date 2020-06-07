@@ -227,7 +227,8 @@ export default {
         url: "http://localhost:8004/auth/login",
         data: {
           username: uname,
-          password: pass
+          password: pass,
+          uid: localStorage.getItem("uid")
         }
       })
         .then(res => {

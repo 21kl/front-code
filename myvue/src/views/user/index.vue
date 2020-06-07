@@ -12,12 +12,13 @@
           <!-- 签到和排名需要靠右显示 -->
           <div style="float:right;margin-top:10px">
             <span style="margin-right:20px">
-              第1名
+              第{{rank}}名
             </span>
             <span>
               <el-button
                 type="success"
                 round
+                @click="sign()"
               >签到</el-button>
             </span>
           </div>
@@ -35,8 +36,47 @@
               name="first"
             >
 
-              你还没有发布帖子，快去发布帖子吧~~~
+              <!-- 在这里显示有出现过的帖子 -->
+              <div v-if="discussList.length==0">
+                你还没有发布帖子，快去发布帖子吧~~~
+              </div>
+              <div v-else>
+                <div
+                  v-for="(item,index) in discussList"
+                  :key="index"
+                >
 
+                  <div
+                    id="disOne"
+                    style="width:100%;height:60px;margin:auto;background: #e5e9f2;margin-top:20px"
+                  >
+                    <div style="float:left;margin-top:10px">
+                      <el-avatar style="vertical-align:middle;"> user </el-avatar>
+                      <!-- //用户名 -->
+                      <span style="vertical-align:middle;margin-left:10px;">{{item.userUsername}}</span>
+                      <!-- 标题 -->
+                      <el-link type="info">
+                        <!-- 跳转到显示帖子的界面 -->
+                        <router-link
+                          target="_blank"
+                          :to="{path:'/discussRender',query:{str:item.discussContent}}"
+                        >
+                          {{item.discussTitle}}
+                        </router-link>
+                      </el-link>
+
+                    </div>
+
+                    <div style="float:right;margin-top:20px">
+                      <span style="margin-right:20px;vertical-align:middle;">
+                        {{item.stringDate}}
+                      </span>
+                    </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+
+              </div>
             </el-tab-pane>
             <el-tab-pane
               label="历史刷题"
@@ -78,7 +118,7 @@
                 :background="false"
                 :page.sync="queryParam.pageIndex"
                 :limit.sync="queryParam.pageSize"
-                @pagination="search"
+                @pagination="search(0)"
                 style="margin-top: 20px"
               />
 
@@ -125,7 +165,7 @@
                   :background="false"
                   :page.sync="queryParam.pageIndex"
                   :limit.sync="queryParam.pageSize"
-                  @pagination="search"
+                  @pagination="search(1)"
                   style="margin-top: 20px"
                 />
               </div>
@@ -143,20 +183,35 @@
               <div>
                 <el-form label-width="80px">
                   <el-form-item label="用户名">
-                    <el-input v-model="username" :disabled="true"></el-input>
+                    <el-input
+                      v-model="username"
+                      :disabled="true"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item label="已完成">
-                    <el-input v-model="totalCompleted" :disabled="true"></el-input>
+                    <el-input
+                      v-model="totalCompleted"
+                      :disabled="true"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item label="旧密码">
-                    <el-input v-model="oldPass" show-password></el-input>
+                    <el-input
+                      v-model="oldPass"
+                      show-password
+                    ></el-input>
                   </el-form-item>
                   <el-form-item label="新密码">
-                    <el-input v-model="newPass" show-password></el-input>
+                    <el-input
+                      v-model="newPass"
+                      show-password
+                    ></el-input>
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" @click="onSubmit">提交修改</el-button>
+                    <el-button
+                      type="primary"
+                      @click="onSubmit"
+                    >提交修改</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -171,6 +226,7 @@
 
 <script>
 import Pagination from "@/components/Pagination/index";
+import { Message } from "element-ui";
 export default {
   components: { Pagination },
   data() {
@@ -187,13 +243,16 @@ export default {
       notifyStr: "空空如也",
       totalCompleted: 0,
       oldPass: "",
-      newPass: ""
+      newPass: "",
+      discussList: [],
+      rank: 3
     };
   },
   methods: {
     handleClick(tab, event) {
       if (tab.index == 0) {
         console.log("讨论贴");
+        this.findAllDiscuss();
       } else if (tab.index == 1) {
         //已经刷完的题目
         this.search(0);
@@ -201,29 +260,67 @@ export default {
         //收藏的题目
         this.search(1);
       } else {
-        this.getUsername()
+        this.getUsername();
         this.getCompletedTotal();
       }
     },
-    onSubmit(){
-      this.listLoading = true;
-      const url = "http://localhost:8004/auth/updatePass"
+    //用户进行签到
+    sign() {
+      const url = "http://localhost:8003/sign/add";
+      this.axios.post(url, { uid: localStorage.getItem("uid") }).then(res => {
+        console.log("list");
+        console.log(res);
+        console.log(res.data.data);
+        //签到成功
+        if (res.data.code == 200) {
+          this.$message({
+            showClose: true,
+            message: "恭喜你，签到成功",
+            type: "success"
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: "已签到，不可重复签到",
+            type: "error"
+          });
+        }
+      });
+    },
+    //找通过uid到所有的讨论贴
+    findAllDiscuss() {
+      const url = "http://localhost:8003/discuss/findAllDiscussByUid";
       this.axios
-        .post(url, {
+        .get(url, { uid: localStorage.getItem("uid") }, { emulateJSON: true })
+        .then(res => {
+          console.log("list");
+          console.log(res);
+          console.log(res.data.data);
+          this.discussList = res.data.data;
+        });
+    },
+    onSubmit() {
+      this.listLoading = true;
+      const url = "http://localhost:8004/auth/updatePass";
+      this.axios
+        .post(
+          url,
+          {
             uid: localStorage.getItem("uid"),
             oldPass: this.oldPass,
             newPass: this.newPass
-        },
-        {
-          emulateJSON: true
-        })
+          },
+          {
+            emulateJSON: true
+          }
+        )
         .then(res => {
-          if(res.data.code == 200)
-            console.log("修改密码成功");
-          console.log(res)
+          if (res.data.code == 200) console.log("修改密码成功");
+          console.log(res);
         });
     },
     getCompletedTotal() {
+      this.rank = Math.ceil(Math.random() * 10) + 1;
       const url = "http://localhost:8003/complete/getCompletedTotal";
       this.axios
         .get(url, {
@@ -251,19 +348,27 @@ export default {
         });
     },
     search(status) {
+      console.log("status")
+      console.log(status)
       this.listLoading = true;
       this.getUsername();
       const url = "http://localhost:8003/complete/findAllCompleteByUid";
       this.axios
-        .get(url, {
-          params: {
-            uid: localStorage.getItem("uid"),
-            indexPage: this.queryParam.pageIndex,
-            limitSize: this.queryParam.pageSize,
-            //是否收藏的标志
-            voteStatus: status
+        .get(
+          url,
+          {
+            params: {
+              uid: localStorage.getItem("uid"),
+              indexPage: this.queryParam.pageIndex,
+              limitSize: this.queryParam.pageSize,
+              //是否收藏的标志
+              voteStatus: status
+            }
+          },
+          {
+            emulateJSON: true
           }
-        })
+        )
         .then(res => {
           this.listLoading = false;
           this.tableData = res.data.data;

@@ -356,10 +356,11 @@ export default {
       else _this.ddd = true;
       $(".question_title").html(
         // "<strong>第 " + (id + 1) + " 题 、</strong>" + question.questionTitle
+        "<div>"+
         "<strong>第 " +
           (id + 1) +
           " 题 、</strong>" +
-          this.questions[id].questionTitle
+          this.questions[id].questionTitle+"</div>"
       );
       var items = question.questionItems.split(";");
       var item = "";
@@ -708,7 +709,7 @@ th {
   text-align: left;
 }
 .question_title {
-  height: 50px;
+  height: 80px;
   margin: 0px;
   /* 让试题偏左边 */
   text-align: left;
@@ -718,6 +719,8 @@ th {
   border: 1px solid #ccc;
   line-height: 45px;
   height: 45px;
+  /* line-height: 80px;
+  height: 80px; */
   cursor: pointer;
   margin: 10px 0px 10px 0px;
   /* text-align:left; */
