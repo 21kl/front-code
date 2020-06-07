@@ -291,7 +291,7 @@ export default {
     findAllDiscuss() {
       const url = "http://localhost:8003/discuss/findAllDiscussByUid";
       this.axios
-        .get(url, { uid: localStorage.getItem("uid") }, { emulateJSON: true })
+        .get(url,{params: { uid: localStorage.getItem("uid") }}, { emulateJSON: true })
         .then(res => {
           console.log("list");
           console.log(res);

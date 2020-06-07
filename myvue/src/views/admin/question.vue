@@ -133,18 +133,18 @@
 
         <el-table-column
           label="上传时间"
-          prop="createTime"
-          width="300"
+          prop="formatTime"
+          width="200"
           header-align="center"
         >
-          <template slot-scope="{row,$index}">
+          <!-- <template slot-scope="{row,$index}">
             <input
-              class="edit-cell"
               v-if="showEdit[$index]"
-              v-model="row.createTime"
+              v-model="row.formatTime"
+              style="text-align:center"
             >
-            <span v-if="!showEdit[$index]">{{row.createTime}}</span>
-          </template>
+            <span v-if="!showEdit[$index]" style="text-align:center">{{row.formatTime}}</span>
+          </template> -->
         </el-table-column>
         <el-table-column
           fixed="right"
@@ -220,7 +220,24 @@ export default {
     };
   },
   methods: {
-    fuzzyQuery() {},
+    fuzzyQuery() {
+      if ("" == this.searchItem || null == this.searchItem) {
+        this.getData();
+      } else {
+        this.loading = true;
+        const url =
+          "http://localhost:8003/question/findQuestionByTagContentFuzzy";
+        this.axios
+          .get(url, { params: { content: this.searchItem } })
+          .then(res => {
+            console.log("tatalCompleted");
+            console.log(res.data.data[0]);
+            this.tableData = res.data.data;
+            this.totalCount = this.tableData.length;
+            this.loading = false;
+          });
+      }
+    },
     getData() {
       // 这里使用axios，使用时请提前引入
       this.loading = true;
