@@ -1,13 +1,11 @@
 <template>
-
-  
   <div class="user-box">
     <div
-      id="postDis"
+      id="postDis1"
       style="float:left;"
     >
       <el-input
-        placeholder="请输入用户昵称"
+        placeholder="请输入用户的昵称"
         prefix-icon="el-icon-search"
         v-model="searchItem"
         style="width:500px;float:left;"
@@ -16,16 +14,9 @@
 
       </el-input>
     </div>
-    <el-row>
-      <el-col :span="24">
-        <div class="tool-box">
-          <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" size="small" @click="handleAdd">新增</el-button> -->
-          <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
-        </div>
-      </el-col>
-    </el-row>
+    
     <el-table
-      :data="users"
+      :data="users.slice((currentPage-1)*PageSize,currentPage*PageSize)"
       @selection-change="selectChange"
       style="width: 100%">
       <el-table-column
@@ -34,7 +25,7 @@
       </el-table-column>
       <el-table-column
         sortable
-        prop="createTime"
+        prop="formatTime"
         label="日期"
         width="180">
       </el-table-column>
@@ -66,10 +57,13 @@
     </el-table>
     <el-pagination
       background
-      :page-sizes="[10, 20, 30, 50]"
-      :page-size="10"
+      @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="5"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="totalCount">
     </el-pagination>
     <el-dialog :title="dialogTitle" width="600px" :visible.sync="userFormVisible" @close="resetForm('userForm')">
       <el-form :model="user" ref="userForm">
@@ -121,19 +115,49 @@ export default {
           { required: true, message: '请输入姓名', trigger: 'blur' },
           { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      totalCount:1,
+      currentPage:1,
+      PageSize: 5,
     }
   },
   mounted () {
     this.getUsers()
   },
   methods: {
-    fuzzyQuery(){},
+    fuzzyQuery(){
+      this.loading = true
+      const url = "http://localhost:8004/user/findUserByUsernameFuzzy"
+      this.$http(url,{params:{username:this.searchItem}}).then((res) => {
+        this.users = res.data.data
+        this.totalCount = this.users.length
+        console.log("users")
+        console.log(this.users)
+      }).catch((err) => {
+        console.error(err)
+      })
+    },
+    // 分页
+    // 每页显示的条数
+    handleSizeChange(val) {
+      // 改变每页显示的条数
+      this.PageSize = val;
+      // 注意：在改变每页显示的条数时，要将页码显示到第一页
+      this.currentPage = 1;
+    },
+    // 显示第几页
+    handleCurrentChange(val) {
+      // 改变默认的页数
+      this.currentPage = val;
+    },
     getUsers () {
       this.loading = true
       const url = "http://localhost:8004/user/findAllUser"
       this.$http(url).then((res) => {
         this.users = res.data.data
+        this.totalCount = this.users.length
+        console.log("users")
+        console.log(this.users)
       }).catch((err) => {
         console.error(err)
       })
